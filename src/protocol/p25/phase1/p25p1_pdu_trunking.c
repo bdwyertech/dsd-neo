@@ -294,11 +294,19 @@ p25_decode_pdu_trunking(dsd_opts* opts, dsd_state* state, uint8_t* mpdu_byte) {
             fprintf(stderr, " [WARN: IDEN %d out of range, skipping]", iden);
         } else {
             state->p25_chan_iden = iden;
-            state->p25_chan_type[iden] = chan_type;
-            state->p25_trans_off[iden] = trans_off;
-            state->p25_chan_spac[iden] = chan_spac;
-            state->p25_base_freq[iden] = base_freq;
-            state->p25_chan_tdma[iden] = 1; // TDMA identifier
+            // Write to new TDMA IDEN entry
+            p25_iden_entry_t *e = &state->p25_iden_tdma[iden];
+            e->chan_type  = chan_type;
+            e->trans_off  = trans_off;
+            e->chan_spac  = chan_spac;
+            e->base_freq  = base_freq;
+            e->populated  = 1;
+            e->wacn  = state->p2_wacn;
+            e->sysid = state->p2_sysid;
+            e->rfss  = state->p2_rfssid;
+            e->site  = state->p2_siteid;
+            e->trust = (state->p25_cc_freq != 0) ? 2 : 1;
+            state->p25_chan_tdma_explicit[iden] |= 2; // bit1 = has TDMA entry
         }
     }
 
