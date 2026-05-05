@@ -365,7 +365,7 @@ p25_test_invoke_mac_vpdu_with_state(const unsigned char* mac_bytes, int mac_len,
     opts->trunk_tune_group_calls = 1; // enable group call tuning in tests
     state->p25_cc_freq = p25_cc_freq;
     state->p25_chan_iden = iden & 0xF;
-    state->synctype = DSD_SYNC_P25P1_POS;            // P1 FDMA context
+    state->synctype = DSD_SYNC_P25P1_POS; // P1 FDMA context
 
     // Populate new dual-array entries (process_channel_to_freq reads from these)
     if (tdma) {

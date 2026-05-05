@@ -84,12 +84,12 @@ expect_eq_u8(const char* tag, uint8_t got, uint8_t want) {
  */
 static void
 write_tdma_iden(dsd_state* st, int iden, long base_freq, int chan_spac, int trans_off, int chan_type) {
-    st->p25_iden_tdma[iden].base_freq  = base_freq;
-    st->p25_iden_tdma[iden].chan_spac   = chan_spac;
-    st->p25_iden_tdma[iden].trans_off   = trans_off;
-    st->p25_iden_tdma[iden].chan_type   = chan_type;
-    st->p25_iden_tdma[iden].populated   = 1;
-    st->p25_chan_tdma_explicit[iden] |= 2;  /* bit1 = has TDMA entry */
+    st->p25_iden_tdma[iden].base_freq = base_freq;
+    st->p25_iden_tdma[iden].chan_spac = chan_spac;
+    st->p25_iden_tdma[iden].trans_off = trans_off;
+    st->p25_iden_tdma[iden].chan_type = chan_type;
+    st->p25_iden_tdma[iden].populated = 1;
+    st->p25_chan_tdma_explicit[iden] |= 2; /* bit1 = has TDMA entry */
 }
 
 /*
@@ -98,12 +98,12 @@ write_tdma_iden(dsd_state* st, int iden, long base_freq, int chan_spac, int tran
  */
 static void
 write_fdma_iden(dsd_state* st, int iden, long base_freq, int chan_spac, int trans_off, int chan_type) {
-    st->p25_iden_fdma[iden].base_freq  = base_freq;
-    st->p25_iden_fdma[iden].chan_spac   = chan_spac;
-    st->p25_iden_fdma[iden].trans_off   = trans_off;
-    st->p25_iden_fdma[iden].chan_type   = chan_type;
-    st->p25_iden_fdma[iden].populated   = 1;
-    st->p25_chan_tdma_explicit[iden] |= 1;  /* bit0 = has FDMA entry */
+    st->p25_iden_fdma[iden].base_freq = base_freq;
+    st->p25_iden_fdma[iden].chan_spac = chan_spac;
+    st->p25_iden_fdma[iden].trans_off = trans_off;
+    st->p25_iden_fdma[iden].chan_type = chan_type;
+    st->p25_iden_fdma[iden].populated = 1;
+    st->p25_chan_tdma_explicit[iden] |= 1; /* bit0 = has FDMA entry */
 }
 
 /*
@@ -122,21 +122,21 @@ test_tdma_fdma_isolation(void) {
     memset(&st, 0, sizeof st);
 
     int iden = 0;
-    long base_5hz = 850000000L / 5;  /* 170000000 */
+    long base_5hz = 850000000L / 5; /* 170000000 */
 
     /* Populate FDMA entry */
-    st.p25_iden_fdma[iden].base_freq  = base_5hz;
-    st.p25_iden_fdma[iden].chan_spac   = 50;
-    st.p25_iden_fdma[iden].trans_off   = 2200;
-    st.p25_iden_fdma[iden].chan_type   = 1;  /* FDMA: denom=1 */
-    st.p25_iden_fdma[iden].populated   = 1;
+    st.p25_iden_fdma[iden].base_freq = base_5hz;
+    st.p25_iden_fdma[iden].chan_spac = 50;
+    st.p25_iden_fdma[iden].trans_off = 2200;
+    st.p25_iden_fdma[iden].chan_type = 1; /* FDMA: denom=1 */
+    st.p25_iden_fdma[iden].populated = 1;
 
     /* Populate TDMA entry */
-    st.p25_iden_tdma[iden].base_freq  = base_5hz;
-    st.p25_iden_tdma[iden].chan_spac   = 50;
-    st.p25_iden_tdma[iden].trans_off   = 7200;
-    st.p25_iden_tdma[iden].chan_type   = 3;  /* TDMA: slots_per_carrier[3]=2, denom=2 */
-    st.p25_iden_tdma[iden].populated   = 1;
+    st.p25_iden_tdma[iden].base_freq = base_5hz;
+    st.p25_iden_tdma[iden].chan_spac = 50;
+    st.p25_iden_tdma[iden].trans_off = 7200;
+    st.p25_iden_tdma[iden].chan_type = 3; /* TDMA: slots_per_carrier[3]=2, denom=2 */
+    st.p25_iden_tdma[iden].populated = 1;
 
     st.p25_chan_tdma_explicit[iden] = 3; /* bit0=FDMA, bit1=TDMA */
 
@@ -179,7 +179,9 @@ test_tdma_fdma_isolation(void) {
     long want_tdma2 = 850000000L + (12L * 50 * 125);
     rc |= expect_eq_long("fdma_isolation: TDMA chan 0x0018", f_tdma2, want_tdma2);
 
-    if (rc == 0) fprintf(stderr, "PASS test_tdma_fdma_isolation\n");
+    if (rc == 0) {
+        fprintf(stderr, "PASS test_tdma_fdma_isolation\n");
+    }
     return rc;
 }
 
@@ -198,19 +200,19 @@ test_multiband_cycling_no_corruption(void) {
     int iden = 2;
 
     /* Write TDMA params (band A) */
-    st.p25_iden_tdma[iden].base_freq  = 850500000L / 5;
-    st.p25_iden_tdma[iden].chan_spac   = 100;
-    st.p25_iden_tdma[iden].trans_off   = 3600;
-    st.p25_iden_tdma[iden].chan_type   = 3;
-    st.p25_iden_tdma[iden].populated   = 1;
+    st.p25_iden_tdma[iden].base_freq = 850500000L / 5;
+    st.p25_iden_tdma[iden].chan_spac = 100;
+    st.p25_iden_tdma[iden].trans_off = 3600;
+    st.p25_iden_tdma[iden].chan_type = 3;
+    st.p25_iden_tdma[iden].populated = 1;
     st.p25_chan_tdma_explicit[iden] |= 2;
 
     /* Write FDMA params (band B) */
-    st.p25_iden_fdma[iden].base_freq  = 850000000L / 5;
-    st.p25_iden_fdma[iden].chan_spac   = 50;
-    st.p25_iden_fdma[iden].trans_off   = 2200;
-    st.p25_iden_fdma[iden].chan_type   = 1;
-    st.p25_iden_fdma[iden].populated   = 1;
+    st.p25_iden_fdma[iden].base_freq = 850000000L / 5;
+    st.p25_iden_fdma[iden].chan_spac = 50;
+    st.p25_iden_fdma[iden].trans_off = 2200;
+    st.p25_iden_fdma[iden].chan_type = 1;
+    st.p25_iden_fdma[iden].populated = 1;
     st.p25_chan_tdma_explicit[iden] |= 1;
 
     /* Verify TDMA entry unchanged after FDMA write */
@@ -225,7 +227,9 @@ test_multiband_cycling_no_corruption(void) {
     rc |= expect_eq_long("multiband: FDMA trans_off", (long)st.p25_iden_fdma[iden].trans_off, 2200L);
     rc |= expect_eq_long("multiband: FDMA chan_type", (long)st.p25_iden_fdma[iden].chan_type, 1L);
 
-    if (rc == 0) fprintf(stderr, "PASS test_multiband_cycling_no_corruption\n");
+    if (rc == 0) {
+        fprintf(stderr, "PASS test_multiband_cycling_no_corruption\n");
+    }
     return rc;
 }
 
@@ -246,19 +250,19 @@ test_explicit_hint_bitmask(void) {
     rc |= expect_eq_u8("bitmask: initial zero", st.p25_chan_tdma_explicit[iden], 0);
 
     /* FDMA write sets bit0 */
-    st.p25_iden_fdma[iden].base_freq  = 850000000L / 5;
-    st.p25_iden_fdma[iden].chan_spac   = 50;
-    st.p25_iden_fdma[iden].chan_type   = 1;
-    st.p25_iden_fdma[iden].populated   = 1;
+    st.p25_iden_fdma[iden].base_freq = 850000000L / 5;
+    st.p25_iden_fdma[iden].chan_spac = 50;
+    st.p25_iden_fdma[iden].chan_type = 1;
+    st.p25_iden_fdma[iden].populated = 1;
     st.p25_chan_tdma_explicit[iden] |= 1;
 
     rc |= expect_eq_u8("bitmask: after FDMA write", st.p25_chan_tdma_explicit[iden], 1);
 
     /* TDMA write sets bit1, preserves bit0 */
-    st.p25_iden_tdma[iden].base_freq  = 850000000L / 5;
-    st.p25_iden_tdma[iden].chan_spac   = 50;
-    st.p25_iden_tdma[iden].chan_type   = 3;
-    st.p25_iden_tdma[iden].populated   = 1;
+    st.p25_iden_tdma[iden].base_freq = 850000000L / 5;
+    st.p25_iden_tdma[iden].chan_spac = 50;
+    st.p25_iden_tdma[iden].chan_type = 3;
+    st.p25_iden_tdma[iden].populated = 1;
     st.p25_chan_tdma_explicit[iden] |= 2;
 
     rc |= expect_eq_u8("bitmask: after TDMA write (both bits)", st.p25_chan_tdma_explicit[iden], 3);
@@ -269,7 +273,9 @@ test_explicit_hint_bitmask(void) {
     st.p25_chan_tdma_explicit[iden] |= 2;
     rc |= expect_eq_u8("bitmask: second TDMA preserves FDMA", st.p25_chan_tdma_explicit[iden], 3);
 
-    if (rc == 0) fprintf(stderr, "PASS test_explicit_hint_bitmask\n");
+    if (rc == 0) {
+        fprintf(stderr, "PASS test_explicit_hint_bitmask\n");
+    }
     return rc;
 }
 
@@ -291,11 +297,11 @@ test_fallback_to_other_array(void) {
     long base_5hz = 850000000L / 5;
 
     /* Populate ONLY the TDMA array */
-    st.p25_iden_tdma[iden].base_freq  = base_5hz;
-    st.p25_iden_tdma[iden].chan_spac   = 50;
-    st.p25_iden_tdma[iden].trans_off   = 7200;
-    st.p25_iden_tdma[iden].chan_type   = 3;
-    st.p25_iden_tdma[iden].populated   = 1;
+    st.p25_iden_tdma[iden].base_freq = base_5hz;
+    st.p25_iden_tdma[iden].chan_spac = 50;
+    st.p25_iden_tdma[iden].trans_off = 7200;
+    st.p25_iden_tdma[iden].chan_type = 3;
+    st.p25_iden_tdma[iden].populated = 1;
 
     /* Set FDMA context — should fall back to TDMA entry */
     st.p25_chan_tdma_explicit[iden] = 1;
@@ -307,19 +313,21 @@ test_fallback_to_other_array(void) {
 
     /* Reverse: only FDMA populated, TDMA context */
     memset(&st, 0, sizeof st);
-    st.p25_iden_fdma[iden].base_freq  = base_5hz;
-    st.p25_iden_fdma[iden].chan_spac   = 50;
-    st.p25_iden_fdma[iden].trans_off   = 2200;
-    st.p25_iden_fdma[iden].chan_type   = 1;
-    st.p25_iden_fdma[iden].populated   = 1;
+    st.p25_iden_fdma[iden].base_freq = base_5hz;
+    st.p25_iden_fdma[iden].chan_spac = 50;
+    st.p25_iden_fdma[iden].trans_off = 2200;
+    st.p25_iden_fdma[iden].chan_type = 1;
+    st.p25_iden_fdma[iden].populated = 1;
 
-    st.p25_chan_tdma_explicit[iden] = 2;  /* TDMA context, but only FDMA populated */
+    st.p25_chan_tdma_explicit[iden] = 2; /* TDMA context, but only FDMA populated */
     chan = (iden << 12) | 0x0008;
     f = process_channel_to_freq(&opts, &st, chan);
     /* Falls back to FDMA entry; chan_type=1, slots_per_carrier[1]=1, denom=1, step=8 */
     rc |= expect_eq_long("fallback: TDMA context uses FDMA entry", f, want);
 
-    if (rc == 0) fprintf(stderr, "PASS test_fallback_to_other_array\n");
+    if (rc == 0) {
+        fprintf(stderr, "PASS test_fallback_to_other_array\n");
+    }
     return rc;
 }
 
@@ -369,7 +377,9 @@ test_slot_tdma_fdma_cycling(void) {
         st.p25_chan_tdma_explicit[iden] = 3;
     }
 
-    if (rc == 0) fprintf(stderr, "PASS test_slot_tdma_fdma_cycling\n");
+    if (rc == 0) {
+        fprintf(stderr, "PASS test_slot_tdma_fdma_cycling\n");
+    }
     return rc;
 }
 
@@ -389,8 +399,8 @@ test_multiband_tdma_cycling(void) {
     memset(&st, 0, sizeof st);
 
     int iden = 2;
-    long base_a_5hz = 850500000L / 5;  /* Band A */
-    long base_b_5hz = 500000000L / 5;  /* Band B */
+    long base_a_5hz = 850500000L / 5; /* Band A */
+    long base_b_5hz = 500000000L / 5; /* Band B */
 
     /* Populate FDMA (independent of TDMA cycling) */
     write_fdma_iden(&st, iden, 850000000L / 5, 50, 2200, 1);
@@ -428,7 +438,9 @@ test_multiband_tdma_cycling(void) {
     long want_band_b = 500000000L + (10L * 50 * 125);
     rc |= expect_eq_long("multiband_tdma: Band B resolves", f_band_b, want_band_b);
 
-    if (rc == 0) fprintf(stderr, "PASS test_multiband_tdma_cycling\n");
+    if (rc == 0) {
+        fprintf(stderr, "PASS test_multiband_tdma_cycling\n");
+    }
     return rc;
 }
 
@@ -449,25 +461,29 @@ test_full_multimode_pattern(void) {
 
     /* Generic test parameters per slot (base_freq in 5Hz units) */
     struct {
-        long tdma_base; int tdma_spac; int tdma_off; int tdma_type;
-        long fdma_base; int fdma_spac; int fdma_off; int fdma_type;
+        long tdma_base;
+        int tdma_spac;
+        int tdma_off;
+        int tdma_type;
+        long fdma_base;
+        int fdma_spac;
+        int fdma_off;
+        int fdma_type;
     } slot_params[4] = {
-        { 850000000L / 5, 50,  7200, 1,   850000000L / 5, 50,  2200, 1 },
-        { 850000000L / 5, 50,  7200, 3,   850000000L / 5, 50,  2200, 1 },
-        { 850500000L / 5, 100, 3600, 3,   850000000L / 5, 50,  2200, 1 },
-        { 850500000L / 5, 100, 3600, 3,   850500000L / 5, 100, 2200, 1 },
+        {850000000L / 5, 50, 7200, 1, 850000000L / 5, 50, 2200, 1},
+        {850000000L / 5, 50, 7200, 3, 850000000L / 5, 50, 2200, 1},
+        {850500000L / 5, 100, 3600, 3, 850000000L / 5, 50, 2200, 1},
+        {850500000L / 5, 100, 3600, 3, 850500000L / 5, 100, 2200, 1},
     };
 
     static const int slots_per_carrier[16] = {1, 1, 1, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
     for (int cycle = 0; cycle < 3; cycle++) {
         for (int slot = 0; slot < 4; slot++) {
-            write_tdma_iden(&st, slot, slot_params[slot].tdma_base,
-                           slot_params[slot].tdma_spac, slot_params[slot].tdma_off,
-                           slot_params[slot].tdma_type);
-            write_fdma_iden(&st, slot, slot_params[slot].fdma_base,
-                           slot_params[slot].fdma_spac, slot_params[slot].fdma_off,
-                           slot_params[slot].fdma_type);
+            write_tdma_iden(&st, slot, slot_params[slot].tdma_base, slot_params[slot].tdma_spac,
+                            slot_params[slot].tdma_off, slot_params[slot].tdma_type);
+            write_fdma_iden(&st, slot, slot_params[slot].fdma_base, slot_params[slot].fdma_spac,
+                            slot_params[slot].fdma_off, slot_params[slot].fdma_type);
         }
 
         for (int slot = 0; slot < 4; slot++) {
@@ -484,8 +500,7 @@ test_full_multimode_pattern(void) {
             int chan_fdma = (slot << 12) | 0x0008;
             st.trunk_chan_map[chan_fdma] = 0;
             long f_fdma = process_channel_to_freq(&opts, &st, chan_fdma);
-            long want_fdma = (slot_params[slot].fdma_base * 5)
-                           + (8L * slot_params[slot].fdma_spac * 125);
+            long want_fdma = (slot_params[slot].fdma_base * 5) + (8L * slot_params[slot].fdma_spac * 125);
             snprintf(tag, sizeof tag, "full[c%d][s%d]: FDMA freq", cycle, slot);
             rc |= expect_eq_long(tag, f_fdma, want_fdma);
 
@@ -498,8 +513,7 @@ test_full_multimode_pattern(void) {
             int chan_tdma = (slot << 12) | chan_num;
             st.trunk_chan_map[chan_tdma] = 0;
             long f_tdma = process_channel_to_freq(&opts, &st, chan_tdma);
-            long want_tdma = (slot_params[slot].tdma_base * 5)
-                           + ((long)step * slot_params[slot].tdma_spac * 125);
+            long want_tdma = (slot_params[slot].tdma_base * 5) + ((long)step * slot_params[slot].tdma_spac * 125);
             snprintf(tag, sizeof tag, "full[c%d][s%d]: TDMA freq", cycle, slot);
             rc |= expect_eq_long(tag, f_tdma, want_tdma);
 
@@ -507,7 +521,9 @@ test_full_multimode_pattern(void) {
         }
     }
 
-    if (rc == 0) fprintf(stderr, "PASS test_full_multimode_pattern\n");
+    if (rc == 0) {
+        fprintf(stderr, "PASS test_full_multimode_pattern\n");
+    }
     return rc;
 }
 
@@ -550,7 +566,9 @@ test_cache_survives_cycling(void) {
     long f_after = process_channel_to_freq(&opts, &st, chan);
     rc |= expect_eq_long("cache: unchanged after cycling", f_after, want);
 
-    if (rc == 0) fprintf(stderr, "PASS test_cache_survives_cycling\n");
+    if (rc == 0) {
+        fprintf(stderr, "PASS test_cache_survives_cycling\n");
+    }
     return rc;
 }
 
@@ -597,7 +615,9 @@ test_reverse_cycle_order(void) {
         st.p25_chan_tdma_explicit[iden] = 3;
     }
 
-    if (rc == 0) fprintf(stderr, "PASS test_reverse_cycle_order\n");
+    if (rc == 0) {
+        fprintf(stderr, "PASS test_reverse_cycle_order\n");
+    }
     return rc;
 }
 

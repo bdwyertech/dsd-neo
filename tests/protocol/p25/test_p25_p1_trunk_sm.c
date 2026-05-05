@@ -126,8 +126,8 @@ main(int argc, char** argv) {
     state.p25_iden_tdma[iden].trust = 2;
     state.p25_iden_tdma[iden].populated = 1;
     state.p25_chan_tdma_explicit[iden] = 2; // TDMA known
-    int channel = (iden << 12) | 0x0001;   // low bit = 1 → slot 1
-    int svc = 0;                           // service bits not used here
+    int channel = (iden << 12) | 0x0001;    // low bit = 1 → slot 1
+    int svc = 0;                            // service bits not used here
     int tg = 1234;
     int src = 5678;
     p25_sm_on_group_grant(&opts, &state, channel, svc, tg, src);

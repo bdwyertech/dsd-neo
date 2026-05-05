@@ -72,20 +72,16 @@ process_channel_to_freq(dsd_opts* opts, dsd_state* state, int channel) {
     // Explicit IDEN hints (bitmask) take precedence over the system-level TDMA
     // fallback so mixed P1/P2 systems do not halve explicitly FDMA channel numbers.
     int explicit_hint = state->p25_chan_tdma_explicit[iden];
-    int use_tdma_denom = (explicit_hint & 0x02) != 0;  // bit1 = has TDMA entry
+    int use_tdma_denom = (explicit_hint & 0x02) != 0; // bit1 = has TDMA entry
 
     // Select the correct IDEN entry based on modulation context.
     // use_tdma_denom determines whether this grant expects TDMA or FDMA parameters.
-    p25_iden_entry_t *entry = use_tdma_denom
-        ? &state->p25_iden_tdma[iden]
-        : &state->p25_iden_fdma[iden];
+    p25_iden_entry_t* entry = use_tdma_denom ? &state->p25_iden_tdma[iden] : &state->p25_iden_fdma[iden];
 
     // Fallback: if preferred array entry not populated, try the other array.
     // This handles the case where only one modulation class has been learned so far.
     if (!entry->populated) {
-        entry = use_tdma_denom
-            ? &state->p25_iden_fdma[iden]
-            : &state->p25_iden_tdma[iden];
+        entry = use_tdma_denom ? &state->p25_iden_fdma[iden] : &state->p25_iden_tdma[iden];
     }
 
     // Read channel type from the selected entry
@@ -174,18 +170,14 @@ p25_format_chan_suffix(const dsd_state* state, uint16_t chan, int slot_hint, cha
     // Explicit IDEN hints (bitmask) take precedence over the system-level TDMA
     // fallback so mixed P1/P2 systems do not halve explicitly FDMA channel numbers.
     int explicit_hint = state->p25_chan_tdma_explicit[iden];
-    int use_tdma_denom = (explicit_hint & 0x02) != 0;  // bit1 = has TDMA entry
+    int use_tdma_denom = (explicit_hint & 0x02) != 0; // bit1 = has TDMA entry
 
     // Select the correct IDEN entry based on modulation context.
-    const p25_iden_entry_t *entry = use_tdma_denom
-        ? &state->p25_iden_tdma[iden]
-        : &state->p25_iden_fdma[iden];
+    const p25_iden_entry_t* entry = use_tdma_denom ? &state->p25_iden_tdma[iden] : &state->p25_iden_fdma[iden];
 
     // Fallback: if preferred array entry not populated, try the other array.
     if (!entry->populated) {
-        entry = use_tdma_denom
-            ? &state->p25_iden_fdma[iden]
-            : &state->p25_iden_tdma[iden];
+        entry = use_tdma_denom ? &state->p25_iden_fdma[iden] : &state->p25_iden_tdma[iden];
     }
 
     // Read chan_type from the selected entry instead of the old flat array

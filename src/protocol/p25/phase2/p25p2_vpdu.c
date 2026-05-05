@@ -1713,17 +1713,17 @@ process_MAC_VPDU(dsd_opts* opts, dsd_state* state, int type, unsigned long long 
 
             // Write to new FDMA IDEN entry
             {
-                p25_iden_entry_t *e = &state->p25_iden_fdma[iden];
+                p25_iden_entry_t* e = &state->p25_iden_fdma[iden];
                 e->base_freq = base_freq;
-                e->chan_type  = 1; // FDMA default
-                e->chan_spac  = chan_spac;
-                e->trans_off  = trans_off;
-                e->trust      = (state->p25_cc_freq != 0 && opts->p25_is_tuned == 0) ? 2 : 1;
-                e->populated  = 1;
-                e->wacn  = state->p2_wacn;
+                e->chan_type = 1; // FDMA default
+                e->chan_spac = chan_spac;
+                e->trans_off = trans_off;
+                e->trust = (state->p25_cc_freq != 0 && opts->p25_is_tuned == 0) ? 2 : 1;
+                e->populated = 1;
+                e->wacn = state->p2_wacn;
                 e->sysid = state->p2_sysid;
-                e->rfss  = state->p2_rfssid;
-                e->site  = state->p2_siteid;
+                e->rfss = state->p2_rfssid;
+                e->site = state->p2_siteid;
                 state->p25_chan_tdma_explicit[iden] |= 1; // bit0 = has FDMA entry
             }
 
@@ -1731,8 +1731,7 @@ process_MAC_VPDU(dsd_opts* opts, dsd_state* state, int type, unsigned long long 
             fprintf(stderr,
                     "  Channel Identifier [%01X] BW [%01X] Transmit Offset [%04X]\n  Channel Spacing [%03X] Base "
                     "Frequency [%08lX] [%09ld]",
-                    state->p25_chan_iden, bw_vu, trans_off, chan_spac,
-                    base_freq, base_freq * 5);
+                    state->p25_chan_iden, bw_vu, trans_off, chan_spac, base_freq, base_freq * 5);
         }
 
         //identifier update (Non-TDMA 6.2.22) (Non-VHF-UHF) //with signed offset, bit trans_off >> 8; bit number 9
@@ -1748,17 +1747,17 @@ process_MAC_VPDU(dsd_opts* opts, dsd_state* state, int type, unsigned long long 
 
             // Write to new FDMA IDEN entry
             {
-                p25_iden_entry_t *e = &state->p25_iden_fdma[iden];
+                p25_iden_entry_t* e = &state->p25_iden_fdma[iden];
                 e->base_freq = base_freq;
-                e->chan_type  = 1; // FDMA default
-                e->chan_spac  = chan_spac;
-                e->trans_off  = trans_off;
-                e->trust      = (state->p25_cc_freq != 0 && opts->p25_is_tuned == 0) ? 2 : 1;
-                e->populated  = 1;
-                e->wacn  = state->p2_wacn;
+                e->chan_type = 1; // FDMA default
+                e->chan_spac = chan_spac;
+                e->trans_off = trans_off;
+                e->trust = (state->p25_cc_freq != 0 && opts->p25_is_tuned == 0) ? 2 : 1;
+                e->populated = 1;
+                e->wacn = state->p2_wacn;
                 e->sysid = state->p2_sysid;
-                e->rfss  = state->p2_rfssid;
-                e->site  = state->p2_siteid;
+                e->rfss = state->p2_rfssid;
+                e->site = state->p2_siteid;
                 state->p25_chan_tdma_explicit[iden] |= 1; // bit0 = has FDMA entry
             }
 
@@ -1766,8 +1765,7 @@ process_MAC_VPDU(dsd_opts* opts, dsd_state* state, int type, unsigned long long 
             fprintf(stderr,
                     "  Channel Identifier [%01X] BW [%01X] Transmit Offset [%04X]\n  Channel Spacing [%03X] Base "
                     "Frequency [%08lX] [%09ld]",
-                    state->p25_chan_iden, bw, trans_off, chan_spac,
-                    base_freq, base_freq * 5);
+                    state->p25_chan_iden, bw, trans_off, chan_spac, base_freq, base_freq * 5);
         }
 
         //identifier update for TDMA, Abbreviated
@@ -1782,17 +1780,17 @@ process_MAC_VPDU(dsd_opts* opts, dsd_state* state, int type, unsigned long long 
 
             // Write to new TDMA IDEN entry
             {
-                p25_iden_entry_t *e = &state->p25_iden_tdma[iden];
+                p25_iden_entry_t* e = &state->p25_iden_tdma[iden];
                 e->base_freq = base_freq;
-                e->chan_type  = chan_type; // from MAC payload (4-bit)
-                e->chan_spac  = chan_spac;
-                e->trans_off  = trans_off;
-                e->trust      = (state->p25_cc_freq != 0 && opts->p25_is_tuned == 0) ? 2 : 1;
-                e->populated  = 1;
-                e->wacn  = state->p2_wacn;
+                e->chan_type = chan_type; // from MAC payload (4-bit)
+                e->chan_spac = chan_spac;
+                e->trans_off = trans_off;
+                e->trust = (state->p25_cc_freq != 0 && opts->p25_is_tuned == 0) ? 2 : 1;
+                e->populated = 1;
+                e->wacn = state->p2_wacn;
                 e->sysid = state->p2_sysid;
-                e->rfss  = state->p2_rfssid;
-                e->site  = state->p2_siteid;
+                e->rfss = state->p2_rfssid;
+                e->site = state->p2_siteid;
                 state->p25_chan_tdma_explicit[iden] |= 2; // bit1 = has TDMA entry
             }
 
@@ -1800,8 +1798,7 @@ process_MAC_VPDU(dsd_opts* opts, dsd_state* state, int type, unsigned long long 
             fprintf(stderr,
                     "  Channel Identifier [%01X] Channel Type [%01X] Transmit Offset [%04X]\n  Channel Spacing [%03X] "
                     "Base Frequency [%08lX] [%09ld]",
-                    state->p25_chan_iden, chan_type, trans_off,
-                    chan_spac, base_freq, base_freq * 5);
+                    state->p25_chan_iden, chan_type, trans_off, chan_spac, base_freq, base_freq * 5);
         }
 
         //identifier update for TDMA, Extended
@@ -1818,21 +1815,21 @@ process_MAC_VPDU(dsd_opts* opts, dsd_state* state, int type, unsigned long long 
 
             // Write to new TDMA IDEN entry
             {
-                p25_iden_entry_t *e = &state->p25_iden_tdma[iden];
+                p25_iden_entry_t* e = &state->p25_iden_tdma[iden];
                 e->base_freq = base_freq;
-                e->chan_type  = chan_type; // from MAC payload (4-bit)
-                e->chan_spac  = chan_spac;
-                e->trans_off  = trans_off;
-                e->trust      =
+                e->chan_type = chan_type; // from MAC payload (4-bit)
+                e->chan_spac = chan_spac;
+                e->trans_off = trans_off;
+                e->trust =
                     (state->p25_cc_freq != 0 && opts->p25_is_tuned == 0 && state->p2_wacn == (unsigned long long)lwacn
                      && state->p2_sysid == (unsigned long long)lsysid)
                         ? 2
                         : 1;
-                e->populated  = 1;
-                e->wacn  = (unsigned long long)lwacn;  // from extended payload
+                e->populated = 1;
+                e->wacn = (unsigned long long)lwacn;   // from extended payload
                 e->sysid = (unsigned long long)lsysid; // from extended payload
-                e->rfss  = state->p2_rfssid;
-                e->site  = state->p2_siteid;
+                e->rfss = state->p2_rfssid;
+                e->site = state->p2_siteid;
                 state->p25_chan_tdma_explicit[iden] |= 2; // bit1 = has TDMA entry
             }
 
@@ -1840,8 +1837,7 @@ process_MAC_VPDU(dsd_opts* opts, dsd_state* state, int type, unsigned long long 
             fprintf(stderr,
                     "  Channel Identifier [%01X] Channel Type [%01X] Transmit Offset [%04X]\n  Channel Spacing [%03X] "
                     "Base Frequency [%08lX] [%09ld]",
-                    state->p25_chan_iden, chan_type, trans_off,
-                    chan_spac, base_freq, base_freq * 5);
+                    state->p25_chan_iden, chan_type, trans_off, chan_spac, base_freq, base_freq * 5);
             fprintf(stderr, "\n  WACN [%04X] SYSID [%04X]", lwacn, lsysid);
         }
 

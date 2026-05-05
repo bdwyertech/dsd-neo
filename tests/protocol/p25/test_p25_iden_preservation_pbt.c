@@ -99,7 +99,9 @@ prng_next(void) {
 /* Generate a random value in [lo, hi] inclusive */
 static uint32_t
 prng_range(uint32_t lo, uint32_t hi) {
-    if (lo >= hi) return lo;
+    if (lo >= hi) {
+        return lo;
+    }
     uint32_t range = hi - lo + 1;
     return lo + (prng_next() % range);
 }
@@ -111,7 +113,7 @@ static const int slots_per_carrier[16] = {1, 1, 1, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2,
 #define PBT_ITERATIONS 10000
 
 /* Fixed seed for reproducibility */
-#define PBT_SEED 0xDEADBEEF
+#define PBT_SEED       0xDEADBEEF
 
 /* --------------------------------------------------------------------------
  * Property P1: FDMA-only frequency formula correctness
@@ -131,10 +133,10 @@ test_property_p1_fdma_formula(void) {
         memset(&st, 0, sizeof st);
 
         /* Generate random parameters within valid ranges */
-        uint32_t iden       = prng_range(0, 15);
-        uint32_t base_freq  = prng_range(1, 200000000);
-        uint32_t chan_spac   = prng_range(1, 1023);
-        uint32_t chan_type   = prng_range(0, 15);  /* Ignored for FDMA denom, but stored */
+        uint32_t iden = prng_range(0, 15);
+        uint32_t base_freq = prng_range(1, 200000000);
+        uint32_t chan_spac = prng_range(1, 1023);
+        uint32_t chan_type = prng_range(0, 15);     /* Ignored for FDMA denom, but stored */
         uint32_t chan_number = prng_range(1, 4095); /* Avoid 0 (chan16=0 returns 0 early) */
 
         /* Skip the sentinel value 0xFFFF (iden=15, chan_number=4095) which
@@ -145,12 +147,12 @@ test_property_p1_fdma_formula(void) {
         }
 
         /* Populate FDMA-only entry */
-        st.p25_iden_fdma[iden].base_freq  = (long int)base_freq;
-        st.p25_iden_fdma[iden].chan_spac   = (int)chan_spac;
-        st.p25_iden_fdma[iden].chan_type   = (int)chan_type;
-        st.p25_iden_fdma[iden].trans_off   = 0;
-        st.p25_iden_fdma[iden].populated   = 1;
-        st.p25_chan_tdma_explicit[iden]    = 1; /* FDMA only (bit0 set) */
+        st.p25_iden_fdma[iden].base_freq = (long int)base_freq;
+        st.p25_iden_fdma[iden].chan_spac = (int)chan_spac;
+        st.p25_iden_fdma[iden].chan_type = (int)chan_type;
+        st.p25_iden_fdma[iden].trans_off = 0;
+        st.p25_iden_fdma[iden].populated = 1;
+        st.p25_chan_tdma_explicit[iden] = 1; /* FDMA only (bit0 set) */
 
         /* Construct 16-bit channel: iden(4) | chan_number(12) */
         int channel = (int)chan16;
@@ -166,10 +168,9 @@ test_property_p1_fdma_formula(void) {
         if (actual != expected) {
             if (failures < 5) { /* Limit diagnostic output */
                 fprintf(stderr,
-                    "P1 FAIL iter=%d: iden=%u base=%u spac=%u type=%u chan=%u "
-                    "expected=%ld got=%ld\n",
-                    iter, iden, base_freq, chan_spac, chan_type, chan_number,
-                    expected, actual);
+                        "P1 FAIL iter=%d: iden=%u base=%u spac=%u type=%u chan=%u "
+                        "expected=%ld got=%ld\n",
+                        iter, iden, base_freq, chan_spac, chan_type, chan_number, expected, actual);
             }
             failures++;
         }
@@ -203,10 +204,10 @@ test_property_p2_tdma_formula(void) {
         memset(&st, 0, sizeof st);
 
         /* Generate random parameters within valid ranges */
-        uint32_t iden       = prng_range(0, 15);
-        uint32_t base_freq  = prng_range(1, 200000000);
-        uint32_t chan_spac   = prng_range(1, 1023);
-        uint32_t chan_type   = prng_range(0, 15);
+        uint32_t iden = prng_range(0, 15);
+        uint32_t base_freq = prng_range(1, 200000000);
+        uint32_t chan_spac = prng_range(1, 1023);
+        uint32_t chan_type = prng_range(0, 15);
         uint32_t chan_number = prng_range(1, 4095); /* Avoid 0 (chan16=0 returns 0 early) */
 
         /* Skip the sentinel value 0xFFFF (iden=15, chan_number=4095) which
@@ -217,12 +218,12 @@ test_property_p2_tdma_formula(void) {
         }
 
         /* Populate TDMA-only entry */
-        st.p25_iden_tdma[iden].base_freq  = (long int)base_freq;
-        st.p25_iden_tdma[iden].chan_spac   = (int)chan_spac;
-        st.p25_iden_tdma[iden].chan_type   = (int)chan_type;
-        st.p25_iden_tdma[iden].trans_off   = 0;
-        st.p25_iden_tdma[iden].populated   = 1;
-        st.p25_chan_tdma_explicit[iden]    = 2; /* TDMA only (bit1 set) */
+        st.p25_iden_tdma[iden].base_freq = (long int)base_freq;
+        st.p25_iden_tdma[iden].chan_spac = (int)chan_spac;
+        st.p25_iden_tdma[iden].chan_type = (int)chan_type;
+        st.p25_iden_tdma[iden].trans_off = 0;
+        st.p25_iden_tdma[iden].populated = 1;
+        st.p25_chan_tdma_explicit[iden] = 2; /* TDMA only (bit1 set) */
 
         /* Construct 16-bit channel: iden(4) | chan_number(12) */
         int channel = (int)chan16;
@@ -241,10 +242,9 @@ test_property_p2_tdma_formula(void) {
         if (actual != expected) {
             if (failures < 5) { /* Limit diagnostic output */
                 fprintf(stderr,
-                    "P2 FAIL iter=%d: iden=%u base=%u spac=%u type=%u chan=%u "
-                    "denom=%d step=%d expected=%ld got=%ld\n",
-                    iter, iden, base_freq, chan_spac, chan_type, chan_number,
-                    denom, step, expected, actual);
+                        "P2 FAIL iter=%d: iden=%u base=%u spac=%u type=%u chan=%u "
+                        "denom=%d step=%d expected=%ld got=%ld\n",
+                        iter, iden, base_freq, chan_spac, chan_type, chan_number, denom, step, expected, actual);
             }
             failures++;
         }
@@ -276,21 +276,21 @@ test_property_p3_cache_precedence(void) {
         memset(&st, 0, sizeof st);
 
         /* Generate random parameters */
-        uint32_t iden       = prng_range(0, 15);
-        uint32_t base_freq  = prng_range(1, 200000000);
-        uint32_t chan_spac   = prng_range(1, 1023);
-        uint32_t chan_type   = prng_range(0, 15);
+        uint32_t iden = prng_range(0, 15);
+        uint32_t base_freq = prng_range(1, 200000000);
+        uint32_t chan_spac = prng_range(1, 1023);
+        uint32_t chan_type = prng_range(0, 15);
         uint32_t chan_number = prng_range(1, 4095); /* Avoid 0 (returns 0 early) */
 
         /* Generate a random cached frequency (non-zero) */
         long cached_freq = (long)prng_range(100000000, 999999999);
 
         /* Populate FDMA entry (so IDEN table has valid data) */
-        st.p25_iden_fdma[iden].base_freq  = (long int)base_freq;
-        st.p25_iden_fdma[iden].chan_spac   = (int)chan_spac;
-        st.p25_iden_fdma[iden].chan_type   = (int)chan_type;
-        st.p25_iden_fdma[iden].populated   = 1;
-        st.p25_chan_tdma_explicit[iden]    = 1;
+        st.p25_iden_fdma[iden].base_freq = (long int)base_freq;
+        st.p25_iden_fdma[iden].chan_spac = (int)chan_spac;
+        st.p25_iden_fdma[iden].chan_type = (int)chan_type;
+        st.p25_iden_fdma[iden].populated = 1;
+        st.p25_chan_tdma_explicit[iden] = 1;
 
         /* Construct 16-bit channel */
         uint16_t chan16 = (uint16_t)((iden << 12) | (chan_number & 0xFFF));
@@ -304,9 +304,8 @@ test_property_p3_cache_precedence(void) {
 
         if (actual != cached_freq) {
             if (failures < 5) {
-                fprintf(stderr,
-                    "P3 FAIL iter=%d: chan16=0x%04X cached=%ld got=%ld\n",
-                    iter, chan16, cached_freq, actual);
+                fprintf(stderr, "P3 FAIL iter=%d: chan16=0x%04X cached=%ld got=%ld\n", iter, chan16, cached_freq,
+                        actual);
             }
             failures++;
         }
@@ -338,7 +337,7 @@ test_property_p4_empty_slot_returns_zero(void) {
         memset(&st, 0, sizeof st);
 
         /* Generate random channel parameters */
-        uint32_t iden       = prng_range(0, 15);
+        uint32_t iden = prng_range(0, 15);
         uint32_t chan_number = prng_range(1, 4095); /* Avoid 0 (returns 0 for different reason) */
 
         /* Leave both arrays unpopulated (populated=0, base_freq=0, chan_spac=0) */
@@ -358,9 +357,8 @@ test_property_p4_empty_slot_returns_zero(void) {
 
         if (actual != 0) {
             if (failures < 5) {
-                fprintf(stderr,
-                    "P4 FAIL iter=%d: iden=%u chan=%u hint=%u got=%ld (expected 0)\n",
-                    iter, iden, chan_number, hint, actual);
+                fprintf(stderr, "P4 FAIL iter=%d: iden=%u chan=%u hint=%u got=%ld (expected 0)\n", iter, iden,
+                        chan_number, hint, actual);
             }
             failures++;
         }
@@ -388,8 +386,7 @@ main(void) {
 
     fprintf(stderr, "\n");
     if (rc == 0) {
-        fprintf(stderr, "All preservation property tests PASSED (%d total iterations)\n",
-                PBT_ITERATIONS * 4);
+        fprintf(stderr, "All preservation property tests PASSED (%d total iterations)\n", PBT_ITERATIONS * 4);
     } else {
         fprintf(stderr, "Some preservation property tests FAILED\n");
     }

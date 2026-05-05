@@ -33,7 +33,7 @@ main(void) {
     // Populate new dual-array entry so p25_format_chan_suffix reads from it
     st.p25_iden_tdma[id].chan_type = 4;
     st.p25_iden_tdma[id].populated = 1;
-    st.p25_chan_tdma_explicit[id] = 2; // TDMA known
+    st.p25_chan_tdma_explicit[id] = 2;             // TDMA known
     uint16_t ch = (uint16_t)((id << 12) | 0x0007); // raw 7 -> fdma 1, slot 3 (S4)
     char buf[32] = {0};
     p25_format_chan_suffix(&st, ch, -1, buf, sizeof buf);

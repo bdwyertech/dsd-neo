@@ -444,7 +444,7 @@ p25_lcw(dsd_opts* opts, dsd_state* state, uint8_t LCW_bits[], uint8_t irrecovera
                     // If the slot is already fully populated by a TSBK, update base_freq in place.
                     // If not yet populated, store base_freq provisionally but do NOT mark populated,
                     // since we lack chan_spac/chan_type needed for frequency resolution.
-                    p25_iden_entry_t *ef = &state->p25_iden_fdma[iden];
+                    p25_iden_entry_t* ef = &state->p25_iden_fdma[iden];
                     if (ef->populated && ef->chan_spac != 0) {
                         // Slot fully populated by TSBK — safe to update base_freq
                         if ((uint32_t)ef->base_freq != base) {
@@ -457,10 +457,10 @@ p25_lcw(dsd_opts* opts, dsd_state* state, uint8_t LCW_bits[], uint8_t irrecovera
                         ef->base_freq = (long int)base;
                     }
                     // Update provenance fields regardless of populated state
-                    ef->wacn  = state->p2_wacn;
+                    ef->wacn = state->p2_wacn;
                     ef->sysid = state->p2_sysid;
-                    ef->rfss  = state->p2_rfssid;
-                    ef->site  = state->p2_siteid;
+                    ef->rfss = state->p2_rfssid;
+                    ef->site = state->p2_siteid;
                 }
             }
 
@@ -473,7 +473,7 @@ p25_lcw(dsd_opts* opts, dsd_state* state, uint8_t LCW_bits[], uint8_t irrecovera
                     // LCW partial write guard: same logic as format 0x58.
                     // Only fully update base_freq on already-populated entries;
                     // store provisionally otherwise without marking populated.
-                    p25_iden_entry_t *ef = &state->p25_iden_fdma[iden];
+                    p25_iden_entry_t* ef = &state->p25_iden_fdma[iden];
                     if (ef->populated && ef->chan_spac != 0) {
                         // Slot fully populated by TSBK — safe to update base_freq
                         if ((uint32_t)ef->base_freq != base) {
@@ -486,10 +486,10 @@ p25_lcw(dsd_opts* opts, dsd_state* state, uint8_t LCW_bits[], uint8_t irrecovera
                         ef->base_freq = (long int)base;
                     }
                     // Update provenance fields regardless of populated state
-                    ef->wacn  = state->p2_wacn;
+                    ef->wacn = state->p2_wacn;
                     ef->sysid = state->p2_sysid;
-                    ef->rfss  = state->p2_rfssid;
-                    ef->site  = state->p2_siteid;
+                    ef->rfss = state->p2_rfssid;
+                    ef->site = state->p2_siteid;
                 }
             }
 

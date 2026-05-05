@@ -202,16 +202,16 @@ typedef struct {
  * multi-mode systems from cycling incompatible parameters in a single slot.
  */
 typedef struct {
-    long int base_freq;        // base frequency in 5 Hz units (per IDEN_UP encoding)
-    int      chan_type;        // 4-bit channel type (TDMA: slots-per-carrier; 1 for FDMA default)
-    int      chan_spac;        // 10-bit channel spacing (in 0.125 kHz units)
-    int      trans_off;        // transmit offset
-    uint8_t  trust;            // 0=unknown, 1=unconfirmed, 2=confirmed on matching CC
-    uint8_t  populated;        // 0=empty, 1=has valid complete data from a TSBK/MAC PDU
-    unsigned long long wacn;   // WACN provenance (system context when IDEN was learned)
-    unsigned long long sysid;  // SysID provenance
-    unsigned long long rfss;   // RFSS ID provenance
-    unsigned long long site;   // Site ID provenance
+    long int base_freq;       // base frequency in 5 Hz units (per IDEN_UP encoding)
+    int chan_type;            // 4-bit channel type (TDMA: slots-per-carrier; 1 for FDMA default)
+    int chan_spac;            // 10-bit channel spacing (in 0.125 kHz units)
+    int trans_off;            // transmit offset
+    uint8_t trust;            // 0=unknown, 1=unconfirmed, 2=confirmed on matching CC
+    uint8_t populated;        // 0=empty, 1=has valid complete data from a TSBK/MAC PDU
+    unsigned long long wacn;  // WACN provenance (system context when IDEN was learned)
+    unsigned long long sysid; // SysID provenance
+    unsigned long long rfss;  // RFSS ID provenance
+    unsigned long long site;  // Site ID provenance
 } p25_iden_entry_t;
 
 struct dsd_state {
