@@ -2092,3 +2092,9 @@ target_include_directories(dsd-neo_test_p25_mbt_0x33_fdma_routing PRIVATE ${PROJ
 target_link_libraries(dsd-neo_test_p25_mbt_0x33_fdma_routing PRIVATE dsd-neo_proto_p25)
 add_test(NAME P25_MBT_0X33_FDMA_ROUTING COMMAND dsd-neo_test_p25_mbt_0x33_fdma_routing)
 
+# P25 Status Symbol accumulator and AFC gate logic
+add_executable(dsd-neo_test_p25_status_symbol protocol/p25/test_p25_status_symbol.c)
+target_include_directories(dsd-neo_test_p25_status_symbol PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_link_libraries(dsd-neo_test_p25_status_symbol PRIVATE dsd-neo_proto_p25)
+add_test(NAME P25_STATUS_SYMBOL COMMAND dsd-neo_test_p25_status_symbol)
+
