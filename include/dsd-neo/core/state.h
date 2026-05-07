@@ -777,6 +777,25 @@ struct dsd_state {
     /** Count of frames where AFC update was suppressed (subscriber/unknown). */
     unsigned int p25_afc_suppressed_count;
 
+    /* ─────────────────────────────────────────────────────────────────────────
+     * P25 Protection Parameter Broadcast state (from TSBK 0x3E/0x3F, LCW 0x65)
+     *
+     * Stores the most recently announced encryption algorithm and key ID on
+     * the control channel. Zero-initialized by calloc; a value of 0 means no
+     * announcement has been received yet.
+     * ───────────────────────────────────────────────────────────────────────── */
+    uint8_t p25_prot_algid; ///< Active encryption Algorithm ID (0 = none received)
+    uint16_t p25_prot_kid;  ///< Active encryption Key ID (0 = none received)
+
+    /* ─────────────────────────────────────────────────────────────────────────
+     * P25 Time and Date Announcement state (from TSBK 0x35 → MAC 0x75)
+     *
+     * Stores the most recently decoded system UTC time and local time offset.
+     * Zero-initialized by calloc; a value of 0 means no announcement received.
+     * ───────────────────────────────────────────────────────────────────────── */
+    time_t p25_sys_time;         ///< Decoded UTC time (0 = no announcement received)
+    int16_t p25_sys_time_offset; ///< Local time offset in minutes from UTC (0 = none)
+
     // P25 Phase 2 voice error moving average per slot (errs2 from AMBE decode)
     uint8_t p25_p2_voice_err_hist[2][64];
     int p25_p2_voice_err_hist_len; // window length (<=64), default 50
