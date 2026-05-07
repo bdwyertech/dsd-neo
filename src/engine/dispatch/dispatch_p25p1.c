@@ -122,7 +122,7 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
         if (check_result == NID_PARITY_OVERRIDE) {
             state->nid_parity_overrides++;
             if (opts->verbose > 1) {
-                fprintf(stderr, " [NID parity override, %d corrections]", error_count);
+                (void)fprintf(stderr, " [NID parity override, %d corrections]", error_count);
             }
         }
 
@@ -152,9 +152,9 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
         state->nid_failures_total++;
 
         if (check_result == NID_PARITY_MISMATCH && opts->verbose > 0) {
-            fprintf(stderr, "%s", KRED);
-            fprintf(stderr, " NID PARITY MISMATCH ");
-            fprintf(stderr, "%s", KNRM);
+            (void)fprintf(stderr, "%s", KRED);
+            (void)fprintf(stderr, " NID PARITY MISMATCH ");
+            (void)fprintf(stderr, "%s", KNRM);
         }
         // Unable to recover NID — mark DUID as error
         duid[0] = 'E';
@@ -166,7 +166,7 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
         // Header Data Unit
         if (opts->errorbars == 1) {
             printFrameInfo(opts, state);
-            fprintf(stderr, " HDU\n");
+            (void)fprintf(stderr, " HDU\n");
         }
         if (opts->mbe_out_dir[0] != 0) {
             if (opts->mbe_out_f != NULL) {
@@ -180,13 +180,13 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
         state->lastp25type = 2;
         state->dmrburstL = 25;
         state->currentslot = 0;
-        sprintf(state->fsubtype, " HDU          ");
+        (void)sprintf(state->fsubtype, " HDU          ");
         processHDU(opts, state);
     } else if (strcmp(duid, "11") == 0) {
         // Logical Link Data Unit 1
         if (opts->errorbars == 1) {
             printFrameInfo(opts, state);
-            fprintf(stderr, " LDU1  ");
+            (void)fprintf(stderr, " LDU1  ");
         }
         if (opts->mbe_out_dir[0] != 0) {
             if (opts->mbe_out_f == NULL) {
@@ -196,7 +196,7 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
         state->lastp25type = 1;
         state->dmrburstL = 26;
         state->currentslot = 0;
-        sprintf(state->fsubtype, " LDU1         ");
+        (void)sprintf(state->fsubtype, " LDU1         ");
         state->numtdulc = 0;
 
         processLDU1(opts, state);
@@ -209,9 +209,9 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
             if (state->lastp25type != 1) {
                 // Late entry: short calls or mid-call tuning can land on an
                 // LDU2 first. Decode it anyway so voice isn't lost.
-                fprintf(stderr, " LDU2 (late entry)  ");
+                (void)fprintf(stderr, " LDU2 (late entry)  ");
             } else {
-                fprintf(stderr, " LDU2  ");
+                (void)fprintf(stderr, " LDU2  ");
             }
         }
         if (opts->mbe_out_dir[0] != 0) {
@@ -220,7 +220,7 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
             }
         }
         state->lastp25type = 2;
-        sprintf(state->fsubtype, " LDU2         ");
+        (void)sprintf(state->fsubtype, " LDU2         ");
         state->numtdulc = 0;
         processLDU2(opts, state);
     } else if (strcmp(duid, "33") == 0) {
@@ -228,7 +228,7 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
         state->dmrburstL = 28;
         if (opts->errorbars == 1) {
             printFrameInfo(opts, state);
-            fprintf(stderr, " TDULC\n");
+            (void)fprintf(stderr, " TDULC\n");
         }
         if (opts->mbe_out_dir[0] != 0) {
             if (opts->mbe_out_f != NULL) {
@@ -240,7 +240,7 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
         // state->lastsrc = 0;
         state->lastp25type = 0;
         state->err_str[0] = 0;
-        sprintf(state->fsubtype, " TDULC        ");
+        (void)sprintf(state->fsubtype, " TDULC        ");
         // Clear GPS data on call termination
         state->dmr_embedded_gps[0][0] = '\0';
         state->dmr_lrrp_gps[0][0] = '\0';
@@ -255,7 +255,7 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
         state->dmrburstL = 28;
         if (opts->errorbars == 1) {
             printFrameInfo(opts, state);
-            fprintf(stderr, " TDU\n");
+            (void)fprintf(stderr, " TDU\n");
         }
         if (opts->mbe_out_dir[0] != 0) {
             if (opts->mbe_out_f != NULL) {
@@ -267,7 +267,7 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
         state->lastsrc = 0;
         state->lastp25type = 0;
         state->err_str[0] = 0;
-        sprintf(state->fsubtype, " TDU          ");
+        (void)sprintf(state->fsubtype, " TDU          ");
         // Clear GPS data on call termination
         state->dmr_embedded_gps[0][0] = '\0';
         state->dmr_lrrp_gps[0][0] = '\0';
@@ -277,7 +277,7 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
         state->dmrburstL = 29;
         if (opts->errorbars == 1) {
             printFrameInfo(opts, state);
-            fprintf(stderr, " TSBK");
+            (void)fprintf(stderr, " TSBK");
         }
         if (opts->mbe_out_dir[0] != 0) {
             if (opts->mbe_out_f != NULL) {
@@ -293,7 +293,7 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
         state->lasttg = 0;
         state->lastsrc = 0;
         state->lastp25type = 3;
-        sprintf(state->fsubtype, " TSBK         ");
+        (void)sprintf(state->fsubtype, " TSBK         ");
 
         processTSBK(opts, state);
 
@@ -301,7 +301,7 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
         state->dmrburstL = 29;
         if (opts->errorbars == 1) {
             printFrameInfo(opts, state);
-            fprintf(stderr, " MPDU\n"); //multi block format PDU
+            (void)fprintf(stderr, " MPDU\n"); //multi block format PDU
         }
         if (opts->mbe_out_dir[0] != 0) {
             if (opts->mbe_out_f != NULL) {
@@ -315,18 +315,18 @@ dsd_dispatch_handle_p25p1(dsd_opts* opts, dsd_state* state) {
             resumeScan(opts, state);
         }
         state->lastp25type = 4;
-        sprintf(state->fsubtype, " MPDU         ");
+        (void)sprintf(state->fsubtype, " MPDU         ");
 
         processMPDU(opts, state);
     }
 
     else {
         state->lastp25type = 0;
-        sprintf(state->fsubtype, "              ");
+        (void)sprintf(state->fsubtype, "              ");
         if (opts->errorbars == 1) {
             printFrameInfo(opts, state);
             // fprintf (stderr," duid:%s *Unknown DUID*\n", duid);
-            fprintf(stderr, " duid:%s \n", duid); //DUID ERR
+            (void)fprintf(stderr, " duid:%s \n", duid); //DUID ERR
         }
     }
 }

@@ -560,7 +560,7 @@ dsd_opts_input_upsample_factor(const dsd_opts* opts) {
     if ((48000 % opts->wav_sample_rate) != 0) {
         return 1;
     }
-    int factor = 48000 / opts->wav_sample_rate;
+    const int factor = 48000 / opts->wav_sample_rate;
     if (factor > DSD_OPTS_INPUT_UPSAMPLE_STAGING_CAP) {
         return 1;
     }
@@ -575,7 +575,7 @@ dsd_opts_input_upsample_factor(const dsd_opts* opts) {
  */
 static inline int
 dsd_opts_effective_input_rate(const dsd_opts* opts) {
-    int sr = (opts && opts->wav_sample_rate > 0) ? opts->wav_sample_rate : 48000;
+    const int sr = (opts && opts->wav_sample_rate > 0) ? opts->wav_sample_rate : 48000;
     return sr * dsd_opts_input_upsample_factor(opts);
 }
 

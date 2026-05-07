@@ -40,8 +40,8 @@ ring_used(const struct output_state* o) {
     /* Atomics policy: head/tail are atomics. We use default sequential
        consistency for simplicity. In an SPSC ring, this could be relaxed
        to acquire/release without changing behavior. */
-    size_t h = o->head.load();
-    size_t t = o->tail.load();
+    const size_t h = o->head.load();
+    const size_t t = o->tail.load();
     if (h >= t) {
         return h - t;
     }

@@ -38,8 +38,8 @@ struct input_ring_state {
  */
 static inline size_t
 input_ring_used(const struct input_ring_state* r) {
-    size_t h = r->head.load();
-    size_t t = r->tail.load();
+    const size_t h = r->head.load();
+    const size_t t = r->tail.load();
     if (h >= t) {
         return h - t;
     }
@@ -178,6 +178,6 @@ int input_ring_read_block(struct input_ring_state* r, float* out, size_t max_cou
  */
 static inline void
 input_ring_discard_all_consumer(struct input_ring_state* r) {
-    size_t h = r->head.load(std::memory_order_acquire);
+    const size_t h = r->head.load(std::memory_order_acquire);
     r->tail.store(h, std::memory_order_release);
 }

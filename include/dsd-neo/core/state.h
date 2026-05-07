@@ -16,6 +16,7 @@
 #include <dsd-neo/core/state_ext.h>
 #include <dsd-neo/core/state_fwd.h>
 
+#include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <time.h>
@@ -1064,8 +1065,8 @@ dsd_state_rescale_symbol_timing(dsd_state* state, int old_rate_hz, int new_rate_
         return;
     }
 
-    int old_sps = state->samplesPerSymbol > 0 ? state->samplesPerSymbol : 10;
-    long long scaled = (long long)old_sps * (long long)new_rate_hz;
+    const int old_sps = state->samplesPerSymbol > 0 ? state->samplesPerSymbol : 10;
+    const long long scaled = (long long)old_sps * (long long)new_rate_hz;
     int new_sps = (int)((scaled + (old_rate_hz / 2)) / old_rate_hz);
     if (new_sps < 2) {
         new_sps = 2;
@@ -1082,9 +1083,9 @@ dsd_state_rescale_symbol_timing(dsd_state* state, int old_rate_hz, int new_rate_
 
     int new_center = (new_sps - 1) / 2;
     if (new_sps > 2) {
-        int min_c = 1;
-        int max_c = new_sps - 2;
-        new_center = (int)(ratio * (double)new_sps + 0.5);
+        const int min_c = 1;
+        const int max_c = new_sps - 2;
+        new_center = (int)lround(ratio * (double)new_sps);
         if (new_center < min_c) {
             new_center = min_c;
         } else if (new_center > max_c) {

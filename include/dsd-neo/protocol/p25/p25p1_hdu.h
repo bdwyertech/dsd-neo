@@ -45,7 +45,7 @@ int read_dibit(dsd_opts* opts, dsd_state* state, char* output, int* status_count
  * \param analog_signal_index The actual index into the AnalogSignal array. This is increased here wich each
  * dibit read.
  */
-void read_dibit_update_analog_data(dsd_opts* opts, dsd_state* state, char* buffer, unsigned int count,
+void read_dibit_update_analog_data(dsd_opts* opts, dsd_state* state, char* output, unsigned int count,
                                    int* status_count, AnalogSignal* analog_signal_array, int* analog_signal_index);
 
 /**

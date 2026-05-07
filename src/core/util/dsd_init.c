@@ -75,15 +75,15 @@ initOpts(dsd_opts* opts) {
     opts->p25status = 0;
     opts->p25tg = 0;
     opts->scoperate = 15;
-    snprintf(opts->audio_in_dev, sizeof opts->audio_in_dev, "%s", "pulse");
-    snprintf(opts->audio_out_dev, sizeof opts->audio_out_dev, "%s", "pulse");
+    (void)snprintf(opts->audio_in_dev, sizeof opts->audio_in_dev, "%s", "pulse");
+    (void)snprintf(opts->audio_out_dev, sizeof opts->audio_out_dev, "%s", "pulse");
     opts->audio_in_fd = -1;
     opts->audio_out_fd = -1;
 
     opts->split = 0;
     opts->playoffset = 0;
     opts->playoffsetR = 0;
-    snprintf(opts->wav_out_dir, sizeof opts->wav_out_dir, "%s", "./WAV");
+    (void)snprintf(opts->wav_out_dir, sizeof opts->wav_out_dir, "%s", "./WAV");
     opts->mbe_out_dir[0] = 0;
     opts->mbe_out_file[0] = 0;
     opts->mbe_out_fileR[0] = 0; //second slot on a TDMA system
@@ -128,11 +128,11 @@ initOpts(dsd_opts* opts) {
     opts->rdio_upload_retries = 1;
     opts->rdio_api_delete_after_upload = 0;
     opts->rdio_api_key[0] = 0;
-    snprintf(opts->rdio_api_url, sizeof opts->rdio_api_url, "%s", "http://127.0.0.1:3000");
+    (void)snprintf(opts->rdio_api_url, sizeof opts->rdio_api_url, "%s", "http://127.0.0.1:3000");
     //opts->wav_out_fd = -1;
     opts->serial_baud = 115200;
     opts->serial_fd = -1;
-    snprintf(opts->serial_dev, sizeof opts->serial_dev, "%s", "/dev/ttyUSB0");
+    (void)snprintf(opts->serial_dev, sizeof opts->serial_dev, "%s", "/dev/ttyUSB0");
     opts->resume = 0;
     opts->frame_dstar = 1;
     opts->frame_x2tdma = 1;
@@ -207,7 +207,7 @@ initOpts(dsd_opts* opts) {
     opts->input_upsample_tail_blocks = 0;
     opts->input_upsample_prev_valid = 0;
 
-    snprintf(opts->output_name, sizeof opts->output_name, "%s", "AUTO");
+    (void)snprintf(opts->output_name, sizeof opts->output_name, "%s", "AUTO");
     opts->pulse_flush = 1; //set 0 to flush, 1 for flushed
     opts->use_ncurses_terminal = 0;
     opts->ncurses_compact = 0;
@@ -253,29 +253,29 @@ initOpts(dsd_opts* opts) {
     opts->use_rigctl = 0;
     opts->rigctl_sockfd = DSD_INVALID_SOCKET;
     opts->rigctlportno = 4532; //TCP Port Number; GQRX - 7356; SDR++ - 4532
-    snprintf(opts->rigctlhostname, sizeof opts->rigctlhostname, "%s", "localhost");
+    (void)snprintf(opts->rigctlhostname, sizeof opts->rigctlhostname, "%s", "localhost");
 
     //UDP Socket Blaster Audio
     opts->udp_sockfd = DSD_INVALID_SOCKET;
     opts->udp_sockfdA = DSD_INVALID_SOCKET;
     opts->udp_portno = 23456; //default port, same os OP25's sockaudio.py
-    snprintf(opts->udp_hostname, sizeof opts->udp_hostname, "%s", "127.0.0.1");
+    (void)snprintf(opts->udp_hostname, sizeof opts->udp_hostname, "%s", "127.0.0.1");
 
     //M17 UDP Port and hostname
     opts->m17_use_ip = 0;                    //if enabled, open UDP and broadcast IP frame
     opts->m17_portno = 17000;                //default is 17000
     opts->m17_udp_sock = DSD_INVALID_SOCKET; //actual UDP socket for M17 to send to
-    snprintf(opts->m17_hostname, sizeof opts->m17_hostname, "%s", "127.0.0.1");
+    (void)snprintf(opts->m17_hostname, sizeof opts->m17_hostname, "%s", "127.0.0.1");
 
     //tcp input options
     opts->tcp_sockfd = DSD_INVALID_SOCKET;
     opts->tcp_portno = 7355; //default favored by SDR++
-    snprintf(opts->tcp_hostname, sizeof opts->tcp_hostname, "%s", "localhost");
+    (void)snprintf(opts->tcp_hostname, sizeof opts->tcp_hostname, "%s", "localhost");
 
     // rtl_tcp defaults
     opts->rtltcp_enabled = 0;
     opts->rtltcp_portno = 1234;
-    snprintf(opts->rtltcp_hostname, sizeof opts->rtltcp_hostname, "%s", "127.0.0.1");
+    (void)snprintf(opts->rtltcp_hostname, sizeof opts->rtltcp_hostname, "%s", "127.0.0.1");
     opts->rtltcp_autotune = 0; // default off; enable via CLI --rtltcp-autotune or env
 
     // UDP direct input defaults

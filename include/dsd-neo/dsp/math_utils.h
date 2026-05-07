@@ -52,7 +52,7 @@ gcd_int(int a, int b) {
         b = -b;
     }
     while (b != 0) {
-        int t = a % b;
+        const int t = a % b;
         a = b;
         b = t;
     }

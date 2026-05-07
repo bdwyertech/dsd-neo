@@ -158,7 +158,7 @@ ted_is_locked(const ted_state_t* s, float threshold) {
     if (!s || s->lock_count <= 0) {
         return 0;
     }
-    float normalized = s->lock_accum / (float)s->lock_count;
+    const float normalized = s->lock_accum / (float)s->lock_count;
     return normalized > threshold ? 1 : 0;
 }
 

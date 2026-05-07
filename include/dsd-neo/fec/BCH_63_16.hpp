@@ -58,7 +58,7 @@ class BCH_63_16_11 {
     generate_gf() {
         // Primitive polynomial: x^6 + x + 1 -> coefficients [1,1,0,0,0,0,1]
         // Same as used in ReedSolomon_63
-        int pp[MM + 1] = {1, 1, 0, 0, 0, 0, 1};
+        const int pp[MM + 1] = {1, 1, 0, 0, 0, 0, 1};
 
         int mask = 1;
         alpha_to[MM] = 0;
@@ -115,7 +115,7 @@ class BCH_63_16_11 {
      *               output[0..15] = information bits (copied from input).
      *               output[16..62] = parity bits computed from g(x).
      */
-    void
+    static void
     encode(const char* input, char* output) {
         // Generator polynomial g(x) = 6331 1413 6723 5453 (octal), degree 47.
         // 48 binary coefficients (MSB = x^47, LSB = x^0). Defined as a function-local
@@ -144,7 +144,7 @@ class BCH_63_16_11 {
         // to be shifted out).
         for (int i = 0; i < KK; i++) {
             // Feedback = input bit XOR the MSB of the shift register
-            char feedback = input[i] ^ sr[0];
+            const char feedback = input[i] ^ sr[0];
 
             // Shift the register left by one position, applying feedback
             // at each tap position defined by g(x). The generator polynomial
