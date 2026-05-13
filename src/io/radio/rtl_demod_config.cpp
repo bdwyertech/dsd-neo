@@ -122,7 +122,7 @@ fm_sdrpp_refresh_config(struct demod_state* demod) {
     int bw_hz = fm_sdrpp_bandwidth_for_profile(demod->channel_lpf_profile, rate_hz);
     demod->fm_demod_bw_hz = bw_hz;
     demod->fm_audio_lpf_enable = (bw_hz > 0 && demod->mode_demod == &dsd_fm_demod) ? 1 : 0;
-    demod->output_scale = (bw_hz > 0) ? 1.0f : (float)(1.0 / 3.14159265358979323846);
+    demod->output_scale = (bw_hz > 0) ? DSD_NEO_FM_LEGACY_SYMBOL_OUTPUT_SCALE : (float)(1.0 / 3.14159265358979323846);
 }
 
 static void
@@ -144,6 +144,13 @@ demod_init_mode(struct demod_state* s, DemodMode mode, const DemodInitParams* p,
     s->pre_j = s->pre_r = 0.0f;
     s->fm_demod_history_valid = 0;
     s->fm_demod_bw_hz = 0;
+    s->fm_disc_smooth_len = 0;
+    s->fm_disc_smooth_pos = 0;
+    s->fm_disc_smooth_count = 0;
+    s->fm_disc_smooth_sum = 0.0f;
+    for (int k = 0; k < DSD_NEO_FM_DISCRIMINATOR_SMOOTH_MAX; k++) {
+        s->fm_disc_smooth_hist[k] = 0.0f;
+    }
     s->prev_lpr_index = 0;
     s->deemph_a = 0.0f;
     s->deemph_avg = 0.0f;

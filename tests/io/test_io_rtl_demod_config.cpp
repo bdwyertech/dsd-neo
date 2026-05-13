@@ -102,6 +102,11 @@ expect_sdrpp_fm_family_default_chain(void) {
         std::fprintf(stderr, "SDR++ FM-family default: fm_audio_lpf_enable=%d want 1\n", demod.fm_audio_lpf_enable);
         rc = 1;
     }
+    if (demod.output_scale != DSD_NEO_FM_LEGACY_SYMBOL_OUTPUT_SCALE) {
+        std::fprintf(stderr, "SDR++ FM-family default: output_scale=%f want %f\n", demod.output_scale,
+                     DSD_NEO_FM_LEGACY_SYMBOL_OUTPUT_SCALE);
+        rc = 1;
+    }
     if (demod.fll_enabled != 0 || demod.ted_enabled != 0 || demod.fm_agc_enable != 0 || demod.fm_limiter_enable != 0
         || demod.iq_dc_block_enable != 0 || demod.iqbal_enable != 0 || demod.audio_lpf_enable != 0
         || demod.dc_block != 0 || demod.rate_out2 > 0) {

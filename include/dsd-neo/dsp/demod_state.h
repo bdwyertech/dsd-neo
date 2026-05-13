@@ -44,6 +44,16 @@
 #define HB_TAPS_MAX 31
 #endif
 
+/* Legacy FM discriminator magnitude expected by downstream decoders.
+   dsd_fm_demod() normalizes channel deviation to +/-1.0; scale the RTL ring
+   output back to Q14/PCM-like samples so direct RTL matches TCP and dsd-fme. */
+#ifndef DSD_NEO_FM_LEGACY_SYMBOL_OUTPUT_SCALE
+#define DSD_NEO_FM_LEGACY_SYMBOL_OUTPUT_SCALE 16384.0f
+#endif
+#ifndef DSD_NEO_FM_DISCRIMINATOR_SMOOTH_MAX
+#define DSD_NEO_FM_DISCRIMINATOR_SMOOTH_MAX 4
+#endif
+
 /* Channel LPF profile ids */
 enum {
     DSD_CH_LPF_PROFILE_WIDE = 0,
@@ -128,6 +138,11 @@ struct demod_state {
        that false-seeded on a genuinely-zero first sample. */
     int fm_demod_history_valid;
     int fm_demod_bw_hz; /* SDR++ NFM bandwidth; deviation is bandwidth/2 */
+    int fm_disc_smooth_len;
+    int fm_disc_smooth_pos;
+    int fm_disc_smooth_count;
+    float fm_disc_smooth_sum;
+    float fm_disc_smooth_hist[DSD_NEO_FM_DISCRIMINATOR_SMOOTH_MAX];
     int post_downsample;
     float output_scale;
     float squelch_level;

@@ -401,8 +401,7 @@ initState(dsd_state* state) {
     memset(state->dmr_stereo_payload, 1, sizeof(int) * 144);
     //dmr buffer end
 
-    // Symbol history buffer for resample-on-sync (SDRTrunk-style)
-    // Note: Buffer stores symbols (one per dibit decision), not raw audio samples
+    // Symbol history buffer for sync warm-start and symbol-level CACH re-digitization.
     state->dmr_sample_history_size = DMR_SAMPLE_HISTORY_SIZE; // ~427ms at 4800 sym/s
     state->dmr_sample_history = aligned_alloc_64(sizeof(float) * state->dmr_sample_history_size);
     if (state->dmr_sample_history) {

@@ -949,6 +949,56 @@ low_pass_real(struct demod_state* s) {
     s->result_len = i2;
 }
 
+static int
+fm_discriminator_smooth_len(int rate_hz) {
+    if (rate_hz <= 0) {
+        return 1;
+    }
+    int len = (rate_hz + 6000) / 12000;
+    if (len < 1) {
+        len = 1;
+    } else if (len > DSD_NEO_FM_DISCRIMINATOR_SMOOTH_MAX) {
+        len = DSD_NEO_FM_DISCRIMINATOR_SMOOTH_MAX;
+    }
+    return len;
+}
+
+static inline void
+fm_discriminator_smooth_reset(struct demod_state* fm, int len) {
+    fm->fm_disc_smooth_len = len;
+    fm->fm_disc_smooth_pos = 0;
+    fm->fm_disc_smooth_count = 0;
+    fm->fm_disc_smooth_sum = 0.0f;
+    memset(fm->fm_disc_smooth_hist, 0, sizeof(fm->fm_disc_smooth_hist));
+}
+
+static inline float
+fm_discriminator_smooth_sample(struct demod_state* fm, float sample, int len) {
+    if (!fm || len <= 1) {
+        return sample;
+    }
+    if (fm->fm_disc_smooth_len != len || fm->fm_disc_smooth_pos < 0 || fm->fm_disc_smooth_pos >= len
+        || fm->fm_disc_smooth_count < 0 || fm->fm_disc_smooth_count > len) {
+        fm_discriminator_smooth_reset(fm, len);
+    }
+
+    int pos = fm->fm_disc_smooth_pos;
+    if (fm->fm_disc_smooth_count < len) {
+        fm->fm_disc_smooth_hist[pos] = sample;
+        fm->fm_disc_smooth_sum += sample;
+        fm->fm_disc_smooth_count++;
+    } else {
+        fm->fm_disc_smooth_sum += sample - fm->fm_disc_smooth_hist[pos];
+        fm->fm_disc_smooth_hist[pos] = sample;
+    }
+    pos++;
+    if (pos >= len) {
+        pos = 0;
+    }
+    fm->fm_disc_smooth_pos = pos;
+    return fm->fm_disc_smooth_sum / (float)fm->fm_disc_smooth_count;
+}
+
 /**
  * @brief Perform FM discriminator on interleaved low-passed I/Q to produce audio PCM.
  *
@@ -971,6 +1021,7 @@ dsd_fm_demod(struct demod_state* fm) {
     float prev_j = fm->pre_j;
     int fm_rate_hz = sdrpp_fm_processing_rate_hz(fm);
     int sdrpp_norm = (fm->fm_demod_bw_hz > 0 && fm_rate_hz > 0) ? 1 : 0;
+    int seeded_history = fm->fm_demod_history_valid ? 0 : 1;
     /* Seed history on first use so the first phase delta is well-defined.
        Uses an explicit validity flag rather than a (prev==0) heuristic, which
        would false-seed when a legitimately-zero sample happened to arrive as
@@ -987,6 +1038,7 @@ dsd_fm_demod(struct demod_state* fm) {
     }
 
     float inv_deviation_rad = 1.0f;
+    int smooth_len = 1;
     if (sdrpp_norm) {
         int bw_hz = fm->fm_demod_bw_hz;
         if (bw_hz > fm_rate_hz) {
@@ -996,6 +1048,11 @@ dsd_fm_demod(struct demod_state* fm) {
         float deviation_rad = 2.0f * 3.14159265358979323846f * deviation_hz / (float)fm_rate_hz;
         if (deviation_rad > 1e-9f) {
             inv_deviation_rad = 1.0f / deviation_rad;
+        }
+        smooth_len = fm_discriminator_smooth_len(fm_rate_hz);
+    } else {
+        if (fm->fm_disc_smooth_len != 0) {
+            fm_discriminator_smooth_reset(fm, 0);
         }
     }
 
@@ -1023,7 +1080,11 @@ dsd_fm_demod(struct demod_state* fm) {
                intent documented in the scaffold commit. */
             angle += fm->fll_freq;
         }
-        out[n] = angle * inv_deviation_rad;
+        float sample = angle * inv_deviation_rad;
+        if (smooth_len > 1 && !(seeded_history && n == 0)) {
+            sample = fm_discriminator_smooth_sample(fm, sample, smooth_len);
+        }
+        out[n] = sample;
         prev_r = cr;
         prev_j = cj;
     }

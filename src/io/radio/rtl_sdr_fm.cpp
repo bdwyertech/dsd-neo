@@ -639,8 +639,10 @@ debug_cqpsk_enabled(void) {
  *  - If env DSD_NEO_TUNER_BW_HZ is set:
  *      - value "auto" or 0 => return 0 (driver automatic)
  *      - positive integer => clamp and use that value (in Hz)
- *  - Otherwise, prefer setting BW ~= capture sample rate to avoid
- *    overly narrow IF filtering across retunes/hops.
+ *  - Otherwise, when the fs/4 capture shift is active, request BW ~= capture
+ *    sample rate so the desired channel is not parked near the tuner IF edge.
+ *  - For non-shifted single-frequency digital channels, keep the narrower
+ *    mode-aware policy.
  *  - As a conservative fallback, derive from DSP bandwidth with a
  *    safety margin and clamp to practical bounds.
  */
@@ -652,6 +654,9 @@ choose_tuner_bw_hz(uint32_t capture_rate_hz, uint32_t dsp_bw_hz) {
     }
 
     /* Mode-aware policy:
+       - FS/4 shifted capture: prefer BW ~= capture rate. The desired channel
+         is capture_rate/4 away from tuner center; narrower IF filters leave too
+         little real-world rolloff/group-delay margin for DMR data bursts.
        - Scanning (multiple freqs): prefer BW ~= capture rate for consistent IF while hopping.
        - Single freq:
            - Digital-like (no deemphasis): target ~2x channel BW with clamps.
@@ -660,35 +665,14 @@ choose_tuner_bw_hz(uint32_t capture_rate_hz, uint32_t dsp_bw_hz) {
 
     int scanning = (controller.freq_len > 1) ? 1 : 0;
     int analog_like = (demod.deemph != 0) ? 1 : 0;
-    /* When offset_tuning is unavailable, we apply an fs/4 capture shift.
-       That places the desired channel capture_rate/4 away from tuner center,
-       so ensure the IF filter is wide enough to avoid attenuating it.
-       Tuner BW is total (double-sided), so we need 2×(fs/4 + half-channel). */
     int fs4_shift_active = (!disable_fs4_shift && dongle.offset_tuning == 0) ? 1 : 0;
-    uint32_t fs4_guard_bw = 0;
     if (fs4_shift_active && capture_rate_hz > 0) {
-        /* Channel center sits at fs/4 from tuner center; tuner BW is total passband.
-           Need: 2 × (offset + half_channel) = fs/2 + dsp_bw */
-        uint64_t guard = (uint64_t)(capture_rate_hz / 2);
-        if (dsp_bw_hz > 0) {
-            guard += (uint64_t)dsp_bw_hz;
-        }
-        /* Clamp to capture rate - no point requesting wider than what we sample. */
-        if (guard > (uint64_t)capture_rate_hz) {
-            guard = capture_rate_hz;
-        }
-        fs4_guard_bw = (uint32_t)guard;
+        return capture_rate_hz;
     }
-    auto apply_fs4_guard = [&](uint32_t bw) -> uint32_t {
-        if (fs4_guard_bw > 0 && bw < fs4_guard_bw) {
-            return fs4_guard_bw;
-        }
-        return bw;
-    };
 
     if (scanning) {
         if (capture_rate_hz >= 225000 && capture_rate_hz <= 5000000) {
-            return apply_fs4_guard(capture_rate_hz);
+            return capture_rate_hz;
         }
     } else {
         if (!analog_like && dsp_bw_hz > 0) {
@@ -704,11 +688,11 @@ choose_tuner_bw_hz(uint32_t capture_rate_hz, uint32_t dsp_bw_hz) {
             if (capture_rate_hz > 0 && tgt > capture_rate_hz) {
                 tgt = capture_rate_hz;
             }
-            return apply_fs4_guard((uint32_t)tgt);
+            return (uint32_t)tgt;
         }
         if (analog_like && capture_rate_hz > 0) {
             uint32_t maxa = 1800000U; /* ~1.8 MHz ceiling for analog */
-            return apply_fs4_guard((capture_rate_hz < maxa) ? capture_rate_hz : maxa);
+            return (capture_rate_hz < maxa) ? capture_rate_hz : maxa;
         }
     }
 
@@ -728,7 +712,7 @@ choose_tuner_bw_hz(uint32_t capture_rate_hz, uint32_t dsp_bw_hz) {
         /* Last-resort default */
         bw = 1200000; /* 1.2 MHz */
     }
-    return apply_fs4_guard(bw);
+    return bw;
 }
 
 /* Forward declarations for visualization ring clears (defined later in file) */
@@ -997,6 +981,11 @@ demod_reset_on_retune(struct demod_state* s, const DemodRetuneResetPlan& plan) {
     s->fm_demod_history_valid = 0;
     s->pre_r = 0.0f;
     s->pre_j = 0.0f;
+    s->fm_disc_smooth_len = 0;
+    s->fm_disc_smooth_pos = 0;
+    s->fm_disc_smooth_count = 0;
+    s->fm_disc_smooth_sum = 0.0f;
+    memset(s->fm_disc_smooth_hist, 0, sizeof(s->fm_disc_smooth_hist));
     if (s->fm_channel_lpf_hist_i && s->fm_channel_lpf_hist_q && s->fm_channel_lpf_taps_len > 1) {
         size_t hist_len = (size_t)(s->fm_channel_lpf_taps_len - 1);
         memset(s->fm_channel_lpf_hist_i, 0, hist_len * sizeof(float));
@@ -1372,7 +1361,7 @@ refresh_fm_sdrpp_runtime_config(struct demod_state* d) {
     int bw_hz = fm_sdrpp_bandwidth_for_profile_local(d->channel_lpf_profile, rate_hz);
     d->fm_demod_bw_hz = bw_hz;
     d->fm_audio_lpf_enable = (bw_hz > 0 && d->mode_demod == &dsd_fm_demod) ? 1 : 0;
-    d->output_scale = (bw_hz > 0) ? 1.0f : (float)(1.0 / M_PI);
+    d->output_scale = (bw_hz > 0) ? DSD_NEO_FM_LEGACY_SYMBOL_OUTPUT_SCALE : (float)(1.0 / M_PI);
 }
 
 static double
